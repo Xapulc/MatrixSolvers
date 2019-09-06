@@ -47,7 +47,7 @@ int main() {
     Matrix A;
 
     if (variant == 0) {
-        A = readMatrix(n, "../res/matrix.dat");
+        A = readMatrix(n, "./res/matrix.dat");
     } else if (variant == 1) {
 
     } else {
