@@ -2,7 +2,6 @@
 // Created by xapulc on 03.09.19.
 //
 
-#include <cmath>
 #include "Matrix.h"
 #include "../Solver/Solver.h"
 
@@ -96,14 +95,30 @@ const int Matrix::arg_module_max_line(const int i, const int axis, const Integer
 
 Matrix& Matrix::inverse(const char* method) {
     const Matrix old = Matrix(*this);
+
+    auto results = std::vector<DoubleVector>((unsigned long) m);
+    auto futures = std::vector<std::future<DoubleVector>>((unsigned long) n_threads);
+
     for(int j = 0; j < m; j++) {
         DoubleVector bias = DoubleVector(n);
         bias.elems[j] = 1;
-        const DoubleVector result = Solver::solve(old, bias, method);
+        futures[j % n_threads] = std::async(std::launch::async, Solver::solve, old, bias, method);
+
+        if ((j + 1) % n_threads == 0)
+            for(int k = 0; k < n_threads; k++)
+                results[j - (n_threads-1) + k] = futures[k].get();
+        else if (j == m - 1)
+            for(int k = 0; k < m % n_threads; k++)
+                results[j - ((m - 1) % n_threads) + k] = futures[k].get();
+    }
+
+    for(int j = 0; j < m; j++) {
         for(int i = 0; i < n; i++) {
-            this->elems[i*m + j] = result[i];
+            auto bias = results[j];
+            this->elems[i*m + j] = bias[i];
         }
     }
+
     return *this;
 }
 

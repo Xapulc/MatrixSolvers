@@ -40,7 +40,7 @@ const int Solver::makeStepGaussColumn(Matrix &A, DoubleVector &bias, const int c
     const int i_max = A.arg_module_max_line(column, 0, free_elements);
     const double main_elem = A(i_max, column);
     if (fabs(main_elem) < 1e-16) {
-        std::cout << "Degenerate matrix" << std::endl;
+        std::cout << "Singular matrix" << std::endl;
         exit(-1);
     } else {
         const int n = A.getShape(0);

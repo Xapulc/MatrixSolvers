@@ -6,8 +6,11 @@
 #define SEMINAR_MATRIX_H
 
 
+#include <cmath>
 #include "IntegerVector.h"
 #include "DoubleVector.h"
+#include <thread>
+#include <future>
 
 class Matrix: public DoubleVector {
 public:
@@ -22,15 +25,17 @@ public:
     const int getShape(const int axis) const { return (axis == 0) ? n : m; }
     Matrix& inverse(const char* method = "gaussMainElementColumn");
     void print() const;
+    void setThreadsNumber(const int n) { this->n_threads = n; }
 
     ~Matrix() = default;
 protected:
     int n{0};
     int m{0};
+    int n_threads{1};
 private:
     using Vector::len;
     using Vector::operator[];
+    int find_free_thread(std::vector<std::shared_ptr<std::promise<bool>>> using_threads) const;
 };
-
 
 #endif //SEMINAR_MATRIX_H

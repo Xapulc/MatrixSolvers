@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
+#include <chrono>
 #include "./Solver/Solver.h"
 
 Matrix readMatrix(const int n, const char* path) {
@@ -30,9 +31,41 @@ Matrix readMatrix(const int n, const char* path) {
     }
 }
 
+Matrix generateMatrix(const int n) {
+    Matrix A = Matrix(n, n);
+    A.elems[0] = -1;
+    for(int i = 1; i < n-1; i++)
+        A.elems[i*n + i] = -2;
+    A.elems[(n - 1) * n + n - 1] = - (n-1) * 1.0 / n;
+    for(int i = 0; i < n-1; i++) {
+        A.elems[i * n + (i + 1)] = 1;
+        A.elems[(i+1)*n + i] = 1;
+    }
+    return A;
+}
+
+Matrix generateMatrixHilbert(const int n) {
+    Matrix A  = Matrix(n, n);
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            A.elems[i*n + j] = 1.0 / (i + j + 1);
+        }
+    }
+    return A;
+}
+
 int main() {
+    int n_threads;
     int n;
-    std::cout << "Get shape of matrix" << std::endl;
+
+    std::cout << "Get number of threads" << std::endl;
+    std::cout << "Max: " << std::thread::hardware_concurrency() << std::endl;
+    std::cin >> n_threads;
+    if ((n_threads <= 0)/* || (n_threads > std::thread::hardware_concurrency())*/) {
+        std::cout << "There is wrong number" << n_threads << std::endl;
+        exit(-1);
+    }
+    std::cout << "Get order of matrix" << std::endl;
     std::cin >> n;
     if (n <= 0) {
         std::cout << "There is bad shape: (" << n << ", " << n << ")" << std::endl;
@@ -49,18 +82,21 @@ int main() {
     if (variant == 0) {
         A = readMatrix(n, "./res/matrix.dat");
     } else if (variant == 1) {
-
+        A = generateMatrix(n);
     } else {
         std::cout << "Bad input" << std::endl;
         exit(-1);
     }
 //    A.print();
     Matrix B = A;
-    clock_t start_time =  clock();
+    B.setThreadsNumber(n_threads);
+    auto start_time =  std::chrono::system_clock::now();
     B.inverse();
-    clock_t end_time =  clock();
+    auto end_time =  std::chrono::system_clock::now();
     std::cout << "Inversed matrix: " << std::endl;
-    B.print();
+//    B.print();
     std::cout << "Residual: " << (A.dot(B) - Matrix::eye(n)).residual() << std::endl;
-    std::cout << "Time work: " << end_time - start_time << " ms" << std::endl;
+
+    std::chrono::duration<double> diff = end_time - start_time;
+    std::cout << "Time work: " << diff.count() << " s" << std::endl;
 }

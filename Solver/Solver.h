@@ -9,7 +9,7 @@
 #include <vector>
 #include <cmath>
 #include "../LinearEssences/Matrix.h"
-#include "../LinearEssences/Vector.h"
+#include <future>
 
 class Solver {
 public:
@@ -25,5 +25,7 @@ private:
                                          IntegerVector &free_elements);
     static void subtractRows(Matrix &A, int subtrahend, int subtractor, double lambda=1);
 };
+
+
 
 #endif //SEMINAR_SOLVER_H

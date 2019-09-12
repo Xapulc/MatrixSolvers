@@ -5,7 +5,7 @@ target=solve
 all: main clean
 
 main: IntVect DoubleVect Matrix LSolver
-	$(CC) -o $(target) main.cpp IntegerVector.o DoubleVector.o Matrix.o Solver.o $(ADD) -lm
+	$(CC) -pthread -o $(target) main.cpp IntegerVector.o DoubleVector.o Matrix.o Solver.o $(ADD) -lm
 
 IntVect: LinearEssences/IntegerVector.cpp
 	$(CC) -c LinearEssences/IntegerVector.cpp $(ADD)
