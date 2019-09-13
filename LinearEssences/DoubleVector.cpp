@@ -33,3 +33,24 @@ DoubleVector DoubleVector::operator/(double alpha) const {
     buf /= alpha;
     return buf;
 }
+
+DoubleVector DoubleVector::operator*(const double alpha) const {
+    auto res = DoubleVector((*this));
+    for(int i = 0; i < len; i++)
+        res.elems[i] *= alpha;
+    return res;
+}
+
+DoubleVector DoubleVector::operator*(const DoubleVector &other) const {
+    auto res = DoubleVector((*this));
+    for (int i = 0; i < len; i++)
+        res.elems[i] *= other[i];
+    return res;
+}
+
+DoubleVector DoubleVector::operator-(const DoubleVector &other) const {
+    auto res = DoubleVector((*this));
+    for (int i = 0; i < len; i++)
+        res.elems[i] -= other[i];
+    return res;
+}

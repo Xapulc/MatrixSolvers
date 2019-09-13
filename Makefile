@@ -1,11 +1,12 @@
 CC=g++
 ADD=-std=c++14
+method=test
 target=solve
 
-all: main clean
+all: $(method) clean
 
-main: IntVect DoubleVect Matrix LSolver
-	$(CC) -pthread -o $(target) main.cpp IntegerVector.o DoubleVector.o Matrix.o Solver.o $(ADD) -lm
+$(method): IntVect DoubleVect Matrix LSolver
+	$(CC) -pthread -o $(target) $(method).cpp IntegerVector.o DoubleVector.o Matrix.o Solver.o $(ADD) -lm
 
 IntVect: LinearEssences/IntegerVector.cpp
 	$(CC) -c LinearEssences/IntegerVector.cpp $(ADD)

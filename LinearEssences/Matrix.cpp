@@ -26,7 +26,7 @@ Matrix Matrix::dot(const Matrix &other) {
     for(int i = 0; i < this->n; i++)
         for(int j = 0; j < other.m; j++)
             for(int k = 0; k < this->m; k++)
-                res.elems[i*m + j] += (*this)(i, k) * other(k, j);
+                res.elems[i*other.m + j] += (*this)(i, k) * other(k, j);
     return res;
 }
 
@@ -136,4 +136,38 @@ Matrix Matrix::eye(const int n) {
         E.elems[i * (n+1)] = 1;
     }
     return E;
+}
+
+Matrix::Matrix(const DoubleVector &b): DoubleVector(b) {
+    this->n = len;
+    this->m = 1;
+}
+
+Matrix Matrix::t() const {
+    Matrix res = Matrix(m, n);
+    for(int i = 0; i < n; i++)
+        for(int j = 0; j < m; j++)
+            res.elems[j*n + i] = (*this)(i, j);
+    return res;
+}
+
+Matrix Matrix::operator*(const Matrix &other) const {
+    auto res = Matrix(*this);
+    for(int i = 0; i < len; i++)
+        res.elems[i] *= other[i];
+    return res;
+}
+
+Matrix Matrix::operator*(const double alpha) const {
+    auto res = Matrix(*this);
+    for(int i = 0; i < len; i++)
+        res.elems[i] *= alpha;
+    return res;
+}
+
+Matrix Matrix::operator-(const Matrix &other) const {
+    auto res = Matrix(*this);
+    for(int i = 0; i < len; i++)
+        res.elems[i] -= other[i];
+    return res;
 }

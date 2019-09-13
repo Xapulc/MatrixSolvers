@@ -17,6 +17,9 @@ public:
     DoubleVector operator/(const DoubleVector &other) const;
     DoubleVector& operator/=(double alpha);
     DoubleVector operator/(double alpha) const;
+    DoubleVector operator*(double alpha) const;
+    DoubleVector operator*(const DoubleVector &other) const;
+    DoubleVector operator-(const DoubleVector &other) const;
     using Parent::print;
     using Parent::residual;
 };

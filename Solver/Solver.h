@@ -17,6 +17,9 @@ public:
 
     static DoubleVector solve(const Matrix &A, const DoubleVector &bias,
                               const char *method = "gaussMainElementColumn");
+    static Matrix reduceToHessenbergForm(const Matrix &A, const char *method = "rotations");
+    static void reduceQR(const Matrix &A, Matrix &Q, Matrix &R, const char *method = "reflection");
+    static DoubleVector findEigenvalues(const Matrix &A, int max_iter = 1000);
 
     ~Solver() = default;
 private:
@@ -24,6 +27,10 @@ private:
     static const int makeStepGaussColumn(Matrix &A, DoubleVector &bias, int column,
                                          IntegerVector &free_elements);
     static void subtractRows(Matrix &A, int subtrahend, int subtractor, double lambda=1);
+    static Matrix rotationsMethodReductionToHessenbergFrom(const Matrix &A);
+    static void getTransformToNorm(DoubleVector &b, Matrix &T, Matrix &InvertedT);
+    static void reflectionMethodReduceQR(const Matrix &A, Matrix &Q, Matrix &R);
+    static void getReflectionVectorAndTransformation(DoubleVector &b, Matrix &U);
 };
 
 

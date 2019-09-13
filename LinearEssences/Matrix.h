@@ -17,15 +17,20 @@ public:
     Matrix() = default;
     Matrix(int n, int m);
     Matrix(const Matrix &other);
+    Matrix(const DoubleVector &b);
 
     static Matrix eye(int n);
     const double operator()(const int i, const int j) const { return (*this)[i * m + j]; }
+    Matrix operator*(const Matrix &other) const;
+    Matrix operator-(const Matrix &other) const;
+    Matrix operator*(double alpha) const;
     Matrix dot(const Matrix &other);
     const int arg_module_max_line(int i, int axis=0, const IntegerVector &free_elements=IntegerVector()) const;
     const int getShape(const int axis) const { return (axis == 0) ? n : m; }
     Matrix& inverse(const char* method = "gaussMainElementColumn");
     void print() const;
     void setThreadsNumber(const int n) { this->n_threads = n; }
+    Matrix t() const;
 
     ~Matrix() = default;
 protected:
@@ -35,7 +40,6 @@ protected:
 private:
     using Vector::len;
     using Vector::operator[];
-    int find_free_thread(std::vector<std::shared_ptr<std::promise<bool>>> using_threads) const;
 };
 
 #endif //SEMINAR_MATRIX_H
