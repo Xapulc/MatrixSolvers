@@ -61,7 +61,7 @@ int main() {
     std::cout << "Get number of threads" << std::endl;
     std::cout << "Max: " << std::thread::hardware_concurrency() << std::endl;
     std::cin >> n_threads;
-    if ((n_threads <= 0)/* || (n_threads > std::thread::hardware_concurrency())*/) {
+    if ((n_threads <= 0) || (n_threads > std::thread::hardware_concurrency())) {
         std::cout << "There is wrong number" << n_threads << std::endl;
         exit(-1);
     }
