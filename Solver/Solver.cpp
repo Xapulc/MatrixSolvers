@@ -90,7 +90,7 @@ Matrix Solver::rotationsMethodReductionToHessenbergFrom(const Matrix &A) {
             getTransformToNorm(b, T, InvertedT);
 
             Matrix Old = Matrix(Res);
-            for(int j = i; j < n; j++)
+            for(int j = 0; j < n; j++)
                 for(int k = i; k < n; k++) {
                     Res.elems[j * n + k] = 0;
                     for(int l = i; l < n; l++)
@@ -99,7 +99,7 @@ Matrix Solver::rotationsMethodReductionToHessenbergFrom(const Matrix &A) {
 
             Old = Matrix(Res);
             for(int j = i; j < n; j++)
-                for(int k = i; k < n; k++) {
+                for(int k = 0; k < n; k++) {
                     Res.elems[j * n + k] = 0;
                     for(int l = i; l < n; l++)
                         Res.elems[j * n + k] += T(j - i, l - i) * Old(l, k);
@@ -122,15 +122,16 @@ void Solver::getTransformToNorm(DoubleVector &b, Matrix &T, Matrix &InvertedT) {
             if ((fabs(b[0]) > 1e-16) || (fabs(b[i]) > 1e-16)) {
                 double denom = sqrt(b[0] * b[0] + b[i] * b[i]);
                 double cos_t = b[0] / denom;
-                double sin_t = b[i] / denom;
+                double sin_t = -b[i] / denom;
 
-                int k = i * n;
+                auto TOld = Matrix(T);
+                auto InversedTOld = Matrix(InvertedT);
                 for(int j = 0; j < n; j++) {
-                    T.elems[j] = cos_t * T.elems[j] - sin_t * T.elems[k + j];
-                    T.elems[k + j] = sin_t * T.elems[j] + cos_t * T.elems[k + j];
+                    T.elems[j] = cos_t * TOld.elems[j] - sin_t * TOld.elems[i*n + j];
+                    T.elems[i*n + j] = sin_t * TOld.elems[j] + cos_t * TOld.elems[i*n + j];
 
-                    InvertedT.elems[j*n] = cos_t * T.elems[j*n] - sin_t * T.elems[j*n + i];
-                    InvertedT.elems[j*n + i] = sin_t * T.elems[j*n] + cos_t * T.elems[j*n + i];
+                    InvertedT.elems[j*n] = cos_t * InversedTOld.elems[j*n] - sin_t * InversedTOld.elems[j*n + i];
+                    InvertedT.elems[j*n + i] = sin_t * InversedTOld.elems[j*n] + cos_t * InversedTOld.elems[j*n + i];
                 }
 
                 b.elems[0] = denom;
@@ -163,12 +164,12 @@ void Solver::reflectionMethodReduceQR(const Matrix &A, Matrix &Q, Matrix &R) {
         auto U = Matrix::eye(n);
 
         for(int j = 0; j < n-i; j++)
-            b.elems[j] = R(i, j+i);
+            b.elems[j] = R(j+i, i);
         getReflectionVectorAndTransformation(b, U_small);
         for(int j = i; j < n; j++)
             for(int k = i; k < n; k++)
                 U.elems[j*n + k] = U_small.elems[(j-i) * (n-i) + k-i];
-        Q = Q.dot(U);
+        Q = U.dot(Q);
         R = U.dot(R);
     }
     Q = Q.t();

@@ -19,7 +19,7 @@ public:
                               const char *method = "gaussMainElementColumn");
     static Matrix reduceToHessenbergForm(const Matrix &A, const char *method = "rotations");
     static void reduceQR(const Matrix &A, Matrix &Q, Matrix &R, const char *method = "reflection");
-    static DoubleVector findEigenvalues(const Matrix &A, int max_iter = 1000);
+    static DoubleVector findEigenvalues(const Matrix &A, int max_iter = 10000);
 
     ~Solver() = default;
 private:
