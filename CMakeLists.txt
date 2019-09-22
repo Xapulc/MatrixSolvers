@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
-project(Seminar)
+project(LinearSolvers)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Seminar Solver/Solver.cpp Solver/Solver.h LinearEssences/Vector.h LinearEssences/Matrix.cpp LinearEssences/Matrix.h LinearEssences/DoubleVector.cpp LinearEssences/DoubleVector.h LinearEssences/IntegerVector.cpp LinearEssences/IntegerVector.h main.cpp test.cpp)
+add_executable(LinearSolvers main.cpp test.cpp Vectors/Matrix.cpp Vectors/Matrix.h Vectors/BoolVector.cpp Vectors/BoolVector.h Solver/Solver.cpp Solver/Solver.h)

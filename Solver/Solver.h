@@ -1,38 +1,34 @@
 //
-// Created by xapulc on 03.09.19.
+// Created by xapulc on 22.09.19.
 //
 
-#ifndef SEMINAR_SOLVER_H
-#define SEMINAR_SOLVER_H
+#ifndef LINEARSOLVERS_SOLVER_H
+#define LINEARSOLVERS_SOLVER_H
 
 
-#include <vector>
-#include <cmath>
-#include "../LinearEssences/Matrix.h"
-#include <future>
+#include "../Vectors/Matrix.h"
 
 class Solver {
 public:
     Solver() = default;
 
-    static DoubleVector solve(const Matrix &A, const DoubleVector &bias,
-                              const char *method = "gaussMainElementColumn");
+    static Matrix solve(const Matrix &A, const Matrix &bias,
+                        const char *method = "gaussMainElementColumn");
     static Matrix reduceToHessenbergForm(const Matrix &A, const char *method = "rotations");
     static void reduceQR(const Matrix &A, Matrix &Q, Matrix &R, const char *method = "reflection");
-    static DoubleVector findEigenvalues(const Matrix &A, int max_iter = 10000);
+    static Matrix findEigenvalues(const Matrix &A, int max_iter = 10000);
 
     ~Solver() = default;
 private:
-    static DoubleVector gaussMainElementColumn(const Matrix &A, const DoubleVector &bias);
-    static const int makeStepGaussColumn(Matrix &A, DoubleVector &bias, int column,
-                                         IntegerVector &free_elements);
+    static Matrix gaussMainElementColumn(const Matrix &A, const Matrix &bias);
+    static const int makeStepGaussColumn(Matrix &A, Matrix &bias, int column,
+                                         BoolVector &free_elements);
     static void subtractRows(Matrix &A, int subtrahend, int subtractor, double lambda=1);
     static Matrix rotationsMethodReductionToHessenbergFrom(const Matrix &A);
-    static void getTransformToNorm(DoubleVector &b, Matrix &T, Matrix &InvertedT);
+    static void getTransformToNorm(Matrix &b, Matrix &T, Matrix &InvertedT);
     static void reflectionMethodReduceQR(const Matrix &A, Matrix &Q, Matrix &R);
-    static void getReflectionVectorAndTransformation(DoubleVector &b, Matrix &U);
+    static void getReflectionVectorAndTransformation(Matrix &b, Matrix &U);
 };
 
 
-
-#endif //SEMINAR_SOLVER_H
+#endif //LINEARSOLVERS_SOLVER_H

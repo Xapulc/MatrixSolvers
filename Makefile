@@ -1,21 +1,18 @@
 CC=g++
 ADD=-std=c++14
-method=test
+method=main
 target=solve
 
 all: $(method) clean
 
-$(method): IntVect DoubleVect Matrix LSolver
-	$(CC) -pthread -o $(target) $(method).cpp IntegerVector.o DoubleVector.o Matrix.o Solver.o $(ADD) -lm
+$(method): BoolVect Matrix LSolver
+	$(CC) -pthread -o $(target) $(method).cpp BoolVector.o Matrix.o Solver.o $(ADD) -lm
 
-IntVect: LinearEssences/IntegerVector.cpp
-	$(CC) -c LinearEssences/IntegerVector.cpp $(ADD)
+BoolVect: Vectors/BoolVector.cpp
+	$(CC) -c Vectors/BoolVector.cpp $(ADD)
 
-DoubleVect: LinearEssences/DoubleVector.cpp
-	$(CC) -c LinearEssences/DoubleVector.cpp $(ADD)
-
-Matrix: LinearEssences/Matrix.cpp
-	$(CC) -c LinearEssences/Matrix.cpp $(ADD)
+Matrix: Vectors/Matrix.cpp
+	$(CC) -c Vectors/Matrix.cpp $(ADD)
 
 LSolver: Solver/Solver.cpp
 	$(CC) -c Solver/Solver.cpp $(ADD)

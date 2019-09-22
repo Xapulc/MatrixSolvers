@@ -6,20 +6,16 @@
 #include <fstream>
 #include "./Solver/Solver.h"
 
-Matrix readMatrix(const int n, const char* path) {
+Matrix readMatrix(const char* path) {
     std::ifstream in(path);
     if (in.is_open()) {
         int n_file;
         in >> n_file;
-//        if (n != n_file) {
-//            std::cout << "Bad shape in file: " << n_file << std::endl;
-//            in.close();
-//            exit(-1);
-//        }
+
         Matrix A = Matrix(n_file, n_file);
         for(int i = 0; i < n_file; i++)
             for(int j = 0; j < n_file; j++)
-                in >> A.elems[i*n_file + j];
+                in >> A(i, j);
         in.close();
         return A;
     } else {
@@ -30,13 +26,23 @@ Matrix readMatrix(const int n, const char* path) {
 
 Matrix generateMatrix(const int n) {
     Matrix A = Matrix(n, n);
-    A.elems[0] = -1;
+    A(0, 0) = -1;
     for(int i = 1; i < n-1; i++)
-        A.elems[i*n + i] = -2;
-    A.elems[(n - 1) * n + n - 1] = - (n-1) * 1.0 / n;
+        A(i, i) = -2;
+    A(n-1, n-1) = - (n-1) * 1.0 / n;
     for(int i = 0; i < n-1; i++) {
-        A.elems[i * n + (i + 1)] = 1;
-        A.elems[(i+1)*n + i] = 1;
+        A(i, i+1) = 1;
+        A(i+1, i) = 1;
+    }
+    return A;
+}
+
+Matrix generateMatrixHilbert(const int n) {
+    Matrix A  = Matrix(n, n);
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            A(i, j) = 1.0 / (i + j + 1);
+        }
     }
     return A;
 }
@@ -59,7 +65,7 @@ int main() {
 
 
     if (variant == 0) {
-        A = readMatrix(n, "./res/matrix.dat");
+        A = readMatrix("./res/matrix.dat");
     } else if (variant == 1) {
         std::cout << "Get order of matrix" << std::endl;
         std::cin >> n;
@@ -75,4 +81,6 @@ int main() {
 
     std::cout << "Eigenvalues: " << std::endl;
     (Solver::findEigenvalues(A, max_iter)).print();
+    std::cout << "Trace: " << A.trace() << std::endl;
+    std::cout << "Residual: " << A.residual() << std::endl;
 }

@@ -22,7 +22,7 @@ Matrix readMatrix(const int n, const char* path) {
         Matrix A = Matrix(n, n);
         for(int i = 0; i < n; i++)
             for(int j = 0; j < n; j++)
-                in >> A.elems[i*n + j];
+                in >> A(i, j);
         in.close();
         return A;
     } else {
@@ -33,13 +33,13 @@ Matrix readMatrix(const int n, const char* path) {
 
 Matrix generateMatrix(const int n) {
     Matrix A = Matrix(n, n);
-    A.elems[0] = -1;
+    A(0, 0) = -1;
     for(int i = 1; i < n-1; i++)
-        A.elems[i*n + i] = -2;
-    A.elems[(n - 1) * n + n - 1] = - (n-1) * 1.0 / n;
+        A(i, i) = -2;
+    A(n-1, n-1) = - (n-1) * 1.0 / n;
     for(int i = 0; i < n-1; i++) {
-        A.elems[i * n + (i + 1)] = 1;
-        A.elems[(i+1)*n + i] = 1;
+        A(i, i+1) = 1;
+        A(i+1, i) = 1;
     }
     return A;
 }
@@ -48,7 +48,7 @@ Matrix generateMatrixHilbert(const int n) {
     Matrix A  = Matrix(n, n);
     for(int i = 0; i < n; i++) {
         for(int j = 0; j < n; j++) {
-            A.elems[i*n + j] = 1.0 / (i + j + 1);
+            A(i, j) = 1.0 / (i + j + 1);
         }
     }
     return A;
@@ -88,10 +88,8 @@ int main() {
         exit(-1);
     }
 //    A.print();
-    Matrix B = A;
-    B.setThreadsNumber(n_threads);
     auto start_time =  std::chrono::system_clock::now();
-    B.inverse();
+    auto B = A.inverse(n_threads);
     auto end_time =  std::chrono::system_clock::now();
     std::cout << "Inversed matrix: " << std::endl;
 //    B.print();
